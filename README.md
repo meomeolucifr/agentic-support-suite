@@ -213,7 +213,7 @@ The setup script will:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Framework**: FastAPI (Python 3.11+)
