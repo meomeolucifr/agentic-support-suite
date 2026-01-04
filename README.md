@@ -192,7 +192,7 @@ The setup script will:
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[Architecture Guide](docs/ARCHITECTURE.md)** - System design and components
 - **[API Documentation](docs/API.md)** - API endpoints and usage
