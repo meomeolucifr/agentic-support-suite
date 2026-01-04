@@ -1,0 +1,224 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: support_postgres
+    environment:
+      POSTGRES_DB: support_system
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: support_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Chroma Vector Database
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: support_chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Router Agent
+  router-agent:
+    build:
+      context: .
+      dockerfile: agents/router-agent/Dockerfile
+    container_name: router_agent
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=support_system
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./agents/router-agent:/app
+      - ./tools:/app/tools
+
+  # Knowledge Agent
+  knowledge-agent:
+    build:
+      context: .
+      dockerfile: agents/knowledge-agent/Dockerfile
+    container_name: knowledge_agent
+    ports:
+      - "8002:8002"
+    environment:
+      - PORT=8002
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=support_system
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - CHROMA_COLLECTION_NAME=support_cases
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chroma:
+        condition: service_healthy
+    volumes:
+      - ./agents/knowledge-agent:/app
+      - ./tools:/app/tools
+
+  # Sentiment Agent
+  sentiment-agent:
+    build:
+      context: .
+      dockerfile: agents/sentiment-agent/Dockerfile
+    container_name: sentiment_agent
+    ports:
+      - "8003:8003"
+    environment:
+      - PORT=8003
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=support_system
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - USE_HUGGINGFACE=${USE_HUGGINGFACE:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./agents/sentiment-agent:/app
+      - ./tools:/app/tools
+
+  # Decision Agent
+  decision-agent:
+    build:
+      context: .
+      dockerfile: agents/decision-agent/Dockerfile
+    container_name: decision_agent
+    ports:
+      - "8004:8004"
+    environment:
+      - PORT=8004
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=support_system
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-587}
+      - EMAIL_SMTP_USER=${EMAIL_SMTP_USER}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./agents/decision-agent:/app
+      - ./tools:/app/tools
+
+  # Orchestrator
+  orchestrator:
+    build:
+      context: .
+      dockerfile: orchestrator/Dockerfile
+    container_name: orchestrator
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=support_system
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ROUTER_AGENT_URL=http://router-agent:8001
+      - KNOWLEDGE_AGENT_URL=http://knowledge-agent:8002
+      - SENTIMENT_AGENT_URL=http://sentiment-agent:8003
+      - DECISION_AGENT_URL=http://decision-agent:8004
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-587}
+      - EMAIL_SMTP_USER=${EMAIL_SMTP_USER}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      router-agent:
+        condition: service_started
+      knowledge-agent:
+        condition: service_started
+      sentiment-agent:
+        condition: service_started
+      decision-agent:
+        condition: service_started
+    volumes:
+      - ./orchestrator:/app
+      - ./tools:/app/tools
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:
+
+networks:
+  default:
+    name: support_network
+
+
+

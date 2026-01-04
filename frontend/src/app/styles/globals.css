@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 30, 30, 30;
+  --background-rgb: 250, 250, 252;
+  --code-bg: 245, 247, 250;
+  --border-color: 229, 231, 235;
+}
+
+* {
+  font-family: 'Roboto Mono', monospace;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'Roboto Mono', monospace;
+}
+
+@layer utilities {
+  .code-vibe {
+    background: rgb(var(--code-bg));
+    border: 1px solid rgb(var(--border-color));
+  }
+  
+  .hover-lift {
+    transition: all 0.2s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+
