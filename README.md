@@ -1,4 +1,4 @@
-# 🚀 Agentic Support Suite
+# Agentic Support Suite
 
 <div align="center">
 
@@ -15,22 +15,22 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **Agentic Support Suite** is a production-ready, scalable customer support system that leverages multiple specialized AI agents working in harmony to automatically resolve tickets, intelligently route issues, and escalate when necessary. Built with a microservices architecture, it delivers enterprise-grade performance with real-time monitoring and analytics.
 
-### 🎯 Key Highlights
+### Key Highlights
 
-- **🤖 Multi-Agent Architecture**: 4 specialized AI agents working together
-- **⚡ High Performance**: Sub-10 second ticket processing
-- **💰 Cost Effective**: 84% reduction in support costs
-- **🎨 Modern Stack**: FastAPI, Next.js, PostgreSQL, Chroma, Redis
-- **🔌 Flexible LLM Support**: Works with Gemini, DeepSeek, and more
-- **📊 Real-time Dashboard**: Beautiful admin interface for monitoring
+- **Multi-Agent Architecture**: 4 specialized AI agents working together
+- **High Performance**: Sub-10 second ticket processing
+- **Cost Effective**: 84% reduction in support costs
+- **Modern Stack**: FastAPI, Next.js, PostgreSQL, Chroma, Redis
+- **Flexible LLM Support**: Works with Gemini, DeepSeek, and more
+- **Real-time Dashboard**: Beautiful admin interface for monitoring
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Capabilities
 
@@ -53,7 +53,7 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Overview
 
@@ -89,24 +89,24 @@
 
 ### Agent Responsibilities
 
-1. **Router Agent** 🎯
+1. **Router Agent**
    - Classifies tickets into categories (BILLING, TECHNICAL, ACCOUNT, SHIPPING, etc.)
    - Provides confidence scores and reasoning
    - Routes tickets to appropriate handlers
 
-2. **Knowledge Agent** 📚
+2. **Knowledge Agent**
    - Searches knowledge base for similar cases
    - Uses semantic vector search (Chroma)
    - Adapts solutions to current ticket context
    - Returns solution with confidence score
 
-3. **Sentiment Agent** 💭
+3. **Sentiment Agent**
    - Analyzes customer sentiment (CALM, NEUTRAL, UPSET, ANGRY)
    - Detects churn risk
    - Determines urgency and required handler type
    - Provides emotional context for human agents
 
-4. **Decision Engine** 🧠
+4. **Decision Engine**
    - Synthesizes all agent outputs
    - Makes final decision (AUTO_RESOLVE, ESCALATE_TO_HUMAN, ESCALATE_TO_MANAGER)
    - Provides reasoning and context
@@ -114,7 +114,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -135,12 +135,12 @@ cd agentic-support-suite
 ```
 
 The setup script will:
-- ✅ Check prerequisites
-- ✅ Start PostgreSQL, Redis, Chroma
-- ✅ Setup database tables
-- ✅ Seed knowledge base with 23+ cases
-- ✅ Start all agent services
-- ✅ Verify system health
+- Check prerequisites
+- Start PostgreSQL, Redis, Chroma
+- Setup database tables
+- Seed knowledge base with 23+ cases
+- Start all agent services
+- Verify system health
 
 ### Manual Setup
 
@@ -235,7 +235,7 @@ The setup script will:
 
 ---
 
-## 📊 Project Structure
+## Project Structure
 
 ```
 agentic-support-suite/
@@ -258,7 +258,7 @@ agentic-support-suite/
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 - **Customer Support Teams**: Automate ticket routing and resolution
 - **SaaS Companies**: Reduce support costs while improving response times
@@ -268,7 +268,7 @@ agentic-support-suite/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -280,13 +280,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with [FastAPI](https://fastapi.tiangolo.com/)
 - Vector search powered by [Chroma](https://www.trychroma.com/)
@@ -295,16 +295,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📧 Contact
+## Contact
 
 For questions, issues, or suggestions, please open an issue on GitHub.
 
 ---
-
-<div align="center">
-
-**Made with ❤️ using AI and modern technologies**
-
-⭐ Star this repo if you find it useful!
-
-</div>
