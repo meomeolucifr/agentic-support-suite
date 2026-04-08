@@ -127,7 +127,7 @@
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/agentic-support-suite.git
+git clone https://github.com/meomeolucifr/agentic-support-suite.git
 cd agentic-support-suite
 
 # Run full setup script
