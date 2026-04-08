@@ -80,7 +80,7 @@
        │
        ▼
 ┌─────────────────────────────────┐
-│      Shared Infrastructure       │
+│      Shared Infrastructure      │
 ├─────────────────────────────────┤
 │  PostgreSQL  │  Chroma  │ Redis │
 │  (Relational)│ (Vector) │(Cache)│
